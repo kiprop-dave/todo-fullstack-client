@@ -74,7 +74,6 @@ const PASSWORD = /test/;
 function Form({ signUp, login }: formProps) {
   const location = useLocation();
   const navigate = useNavigate();
-  const from = location.state?.from?.pathname || "/todo";
   const context = useContext(AuthContext);
   if (!context) return null;
   const { setAuth } = context;
@@ -105,9 +104,9 @@ function Form({ signUp, login }: formProps) {
         },
       );
 
-      console.log(response?.data);
+      // console.log(response?.data);
       setAuth({ ...response.data, email });
-      navigate(from, { replace: true });
+      navigate("/todo", { replace: true });
     } catch (error) {
       console.log(error);
     }
