@@ -3,7 +3,7 @@ import React, { useRef, useEffect, useState, useContext } from "react";
 import axios from "../api/axios";
 import styled from "styled-components";
 import { Button } from "../utilStyles/styles";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Container = styled.form`
   width: 500px;
@@ -72,7 +72,6 @@ const EMAIL = /loss/;
 const PASSWORD = /test/;
 
 function Form({ signUp, login }: formProps) {
-  const location = useLocation();
   const navigate = useNavigate();
   const context = useContext(AuthContext);
   if (!context) return null;

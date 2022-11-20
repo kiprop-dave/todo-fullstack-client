@@ -12,4 +12,8 @@ type responseData ={
     accessToken?:string
 }
 
-export type {todo,responseData}
+type themeProps = {
+    lightMode:boolean
+}
+
+export type {todo,responseData,themeProps}

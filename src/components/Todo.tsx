@@ -1,30 +1,54 @@
 import styled from "styled-components";
 import { todo, responseData } from "../types/types";
 import axios from "../api/axios";
-import { SyntheticEvent } from "react";
+import { SyntheticEvent, useState } from "react";
+import { themeProps } from "../types/types";
 
 const Container = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  min-height: 4rem;
-  justify-content: space-between;
+  min-height: 3rem;
+  padding: 0.5rem;
+  background-color: ${({ lightMode }: themeProps) =>
+    lightMode ? "#fafafa" : "hsl(235, 24%, 19%)"};
+  border-bottom: ${({ lightMode }: themeProps) =>
+    lightMode
+      ? "1px solid hsl(235, 24%, 19%)"
+      : "1px solid hsl(235, 19%, 35%)"};
 `;
 type checkProps = {
   checked: boolean;
+  lightMode: boolean;
 };
 const Check = styled.div`
-  width: 1rem;
-  height: 1rem;
-  background-color: ${({ checked }: checkProps) =>
-    checked ? "blue" : "white"};
-  border: solid 1px black;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: ${({ checked, lightMode }: checkProps) =>
+    checked
+      ? "hsl(220, 98%, 61%)"
+      : lightMode && !checked
+      ? "#fafafa"
+      : "hsl(235, 24%, 19%)"};
+  cursor: pointer;
+  border: ${({ lightMode }) =>
+    lightMode ? "solid 1px black" : "solid 1px #fafafa"};
 `;
 const TodoText = styled.p`
-  color: black;
+  color: ${({ lightMode }: checkProps) =>
+    lightMode ? "hsl(235, 21%, 11%)" : "#fafafa"};
+  margin-left: 1rem;
+  text-decoration: ${({ checked }) => (checked ? "line-through" : "none")};
 `;
-const Delete = styled.button`
-  padding: 5px;
+const Delete = styled.img`
+  height: 1.2rem;
+  width: 1.2rem;
+  margin-left: auto;
+  cursor: pointer;
 `;
 
 type todoProps = {
@@ -32,10 +56,13 @@ type todoProps = {
   email: string;
   accessToken?: string;
   setToDo: (data: responseData) => void;
+  lightMode: boolean;
 };
 const urlCompleted = "/api/todos/completed";
 const deleteUrl = "/api/todos/delete";
-function Todo({ todoItem, email, accessToken, setToDo }: todoProps) {
+function Todo({ todoItem, email, accessToken, setToDo, lightMode }: todoProps) {
+  const [hovered, setHovered] = useState(false);
+
   const { _id, isCompleted, toDo } = todoItem;
 
   const handleCheck = async (e: SyntheticEvent) => {
@@ -77,12 +104,34 @@ function Todo({ todoItem, email, accessToken, setToDo }: todoProps) {
     }
   };
 
+  const mouseEnter = () => {
+    setHovered(true);
+  };
+
+  const mouseLeave = () => {
+    setHovered(false);
+  };
+
   return (
     <>
-      <Container>
-        <Check checked={isCompleted} onClick={handleCheck} />
-        <TodoText>{toDo}</TodoText>
-        <Delete onClick={handleDelete}>delete todo</Delete>
+      <Container
+        lightMode={lightMode}
+        onMouseEnter={mouseEnter}
+        onMouseLeave={mouseLeave}
+      >
+        <Check
+          checked={isCompleted}
+          onClick={handleCheck}
+          lightMode={lightMode}
+        >
+          {isCompleted && <img src="/icon-check.svg" alt="check" />}
+        </Check>
+        <TodoText checked={isCompleted} lightMode={lightMode}>
+          {toDo}
+        </TodoText>
+        {hovered && (
+          <Delete src="/icon-cross.svg" alt="delete" onClick={handleDelete} />
+        )}
       </Container>
     </>
   );
