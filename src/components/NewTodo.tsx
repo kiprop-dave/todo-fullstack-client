@@ -2,6 +2,7 @@ import styled from "styled-components";
 import CircleCheck from "./CircleCheck";
 import { themeProps } from "../types/types";
 import useLightMode from "../hooks/useLightMode";
+import React from "react";
 
 const Container = styled.div`
   width: 100%;
@@ -23,6 +24,7 @@ const Input = styled.input`
   background-color: ${({ lightMode }: themeProps) =>
     lightMode ? "#fafafa" : "hsl(235, 24%, 19%)"};
   color: ${({ lightMode }) => (lightMode ? "hsl(235, 21%, 11%)" : "#fafafa")};
+  font-family: "Roboto Mono", monospace;
 
   &:focus {
     outline: none;
@@ -50,6 +52,13 @@ function NewTodo({ handleInput, createTodo, todo }: newToDoProps) {
   const theme = useLightMode();
   if (!theme) return null;
   const { lightMode } = theme;
+
+  const enterKey = (e: React.KeyboardEvent) => {
+    e.preventDefault();
+    if (e.key === "Enter") {
+      createTodo();
+    }
+  };
   return (
     <Container lightMode={lightMode}>
       <CircleCheck />
@@ -58,6 +67,7 @@ function NewTodo({ handleInput, createTodo, todo }: newToDoProps) {
         value={todo}
         placeholder="Create a new todo..."
         onChange={(e) => handleInput(e.target.value)}
+        onKeyUp={(e) => enterKey(e)}
       />
       <AddButton onClick={() => createTodo()}>
         <AddIcon src="/add-icon.png" alt="add todo" />

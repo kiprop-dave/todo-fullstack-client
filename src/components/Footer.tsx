@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { themeProps } from "../types/types";
 import useLightMode from "../hooks/useLightMode";
+import { todo } from "../types/types";
 
 const Container = styled.footer`
   width: 100%;
@@ -36,18 +37,35 @@ const Filter = styled.div`
   width: 40%;
 `;
 
-function Footer() {
+type footerProps = {
+  all: () => void;
+  active: () => void;
+  completed: () => void;
+  // clear:() => void
+  todos?: todo[];
+};
+
+function Footer({ all, active, completed, todos }: footerProps) {
+  const left = todos?.filter((el) => !el.isCompleted).length;
   const theme = useLightMode();
   if (!theme) return null;
   const { lightMode } = theme;
   return (
     <>
       <Container lightMode={lightMode}>
-        <Text>3 items left</Text>
+        <Text>
+          {left} item{left && left > 1 ? "s" : ""} left
+        </Text>
         <Filter>
-          <Text color="hsl(220, 98%, 61%)">All</Text>
-          <Text hoverAble>Active</Text>
-          <Text hoverAble>Completed</Text>
+          <Text color="hsl(220, 98%, 61%)" hoverAble onClick={() => all()}>
+            All
+          </Text>
+          <Text hoverAble onClick={() => active()}>
+            Active
+          </Text>
+          <Text hoverAble onClick={() => completed()}>
+            Completed
+          </Text>
         </Filter>
         <Text hoverAble>Clear Completed</Text>
       </Container>

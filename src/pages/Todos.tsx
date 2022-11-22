@@ -1,5 +1,5 @@
 import axios from "../api/axios";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthProvider";
 import { ThemeContext } from "../context/ThemeProvider";
 import Navbar from "../components/Navbar";
@@ -62,6 +62,23 @@ function Todos() {
   const { auth, setAuth } = todosContext;
   const { userTodos, email, accessToken } = auth;
   const { lightMode } = themeContext;
+  const [todos, setTodos] = useState(userTodos);
+
+  useEffect(() => {
+    setTodos(userTodos);
+  }, [userTodos]);
+
+  const showAll = () => {
+    setTodos(userTodos);
+  };
+
+  const showCompleted = () => {
+    setTodos(userTodos?.filter((el) => el.isCompleted));
+  };
+
+  const showActive = () => {
+    setTodos(userTodos?.filter((el) => !el.isCompleted));
+  };
 
   const createTodo = async () => {
     if (!todo.length) {
@@ -87,7 +104,7 @@ function Todos() {
     }
   };
 
-  const todoElements = userTodos?.map((todo, index) => (
+  const todoElements = todos?.map((todo, index) => (
     <Todo
       key={index}
       todoItem={todo}
@@ -111,7 +128,12 @@ function Todos() {
           <TopPad />
           {todoElements}
         </TodosContainer>
-        <Footer />
+        <Footer
+          active={showActive}
+          completed={showCompleted}
+          all={showAll}
+          todos={userTodos}
+        />
       </AppConteiner>
     </TodosPage>
   );
