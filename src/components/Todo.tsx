@@ -43,6 +43,7 @@ const TodoText = styled.p`
     lightMode ? "hsl(235, 21%, 11%)" : "#fafafa"};
   margin-left: 1rem;
   text-decoration: ${({ checked }) => (checked ? "line-through" : "none")};
+  opacity: ${({ checked }) => (checked ? "0.5" : "1")};
 `;
 const Delete = styled.img`
   height: 1.2rem;
