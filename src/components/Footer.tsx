@@ -41,11 +41,11 @@ type footerProps = {
   all: () => void;
   active: () => void;
   completed: () => void;
-  // clear:() => void
+  clear: () => void;
   todos?: todo[];
 };
 
-function Footer({ all, active, completed, todos }: footerProps) {
+function Footer({ all, active, completed, todos, clear }: footerProps) {
   const left = todos?.filter((el) => !el.isCompleted).length;
   const theme = useLightMode();
   if (!theme) return null;
@@ -67,7 +67,9 @@ function Footer({ all, active, completed, todos }: footerProps) {
             Completed
           </Text>
         </Filter>
-        <Text hoverAble>Clear Completed</Text>
+        <Text hoverAble onClick={() => clear()}>
+          Clear Completed
+        </Text>
       </Container>
     </>
   );

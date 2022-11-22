@@ -49,6 +49,8 @@ const TopPad = styled.div`
 `;
 
 const createUrl = "/api/todos/create";
+const clearUrl = "/api/todos/clear";
+
 function Todos() {
   const [todo, setTodo] = useState("");
 
@@ -69,14 +71,23 @@ function Todos() {
   }, [userTodos]);
 
   const showAll = () => {
+    if (!userTodos?.length) {
+      return;
+    }
     setTodos(userTodos);
   };
 
   const showCompleted = () => {
+    if (!userTodos?.length) {
+      return;
+    }
     setTodos(userTodos?.filter((el) => el.isCompleted));
   };
 
   const showActive = () => {
+    if (!userTodos?.length) {
+      return;
+    }
     setTodos(userTodos?.filter((el) => !el.isCompleted));
   };
 
@@ -99,6 +110,26 @@ function Todos() {
       // console.log(response.data);
       setAuth({ ...response.data, email, accessToken });
       setTodo("");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const clearCompleted = async () => {
+    if (!userTodos?.length) {
+      return;
+    }
+    try {
+      const res = await axios.delete(clearUrl, {
+        data: { email },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        withCredentials: true,
+      });
+      // console.log(res.data);
+      setAuth({ ...res.data, email, accessToken });
     } catch (error) {
       console.log(error);
     }
@@ -133,6 +164,7 @@ function Todos() {
           completed={showCompleted}
           all={showAll}
           todos={userTodos}
+          clear={clearCompleted}
         />
       </AppConteiner>
     </TodosPage>
